@@ -48,6 +48,7 @@ class DevMenuCommandHandlersProvider(
             val activity = host.currentReactContext?.currentActivity ?: return
             manager.toggleMenu(activity)
           }
+          "toggleRemoteDebugging" -> devDelegate.toggleRemoteDebugging()
           "toggleElementInspector" -> devDelegate.toggleElementInspector()
           "togglePerformanceMonitor" -> {
             val activity = host.currentReactContext?.currentActivity ?: return

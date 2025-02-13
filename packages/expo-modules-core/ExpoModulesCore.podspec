@@ -52,7 +52,7 @@ Pod::Spec.new do |s|
   s.homepage       = package['homepage']
   s.platforms       = {
     :ios => '15.1',
-    :osx => '11.0',
+    :osx => '10.15',
     :tvos => '15.1'
   }
   s.swift_version  = '5.4'
@@ -104,6 +104,10 @@ Pod::Spec.new do |s|
   s.dependency 'React-RCTAppDelegate'
   s.dependency 'React-NativeModulesApple'
   s.dependency 'React-RCTFabric'
+
+  if reactNativeTargetVersion >= 77
+    s.dependency 'ReactAppDependencyProvider'
+  end
 
   install_modules_dependencies(s)
 

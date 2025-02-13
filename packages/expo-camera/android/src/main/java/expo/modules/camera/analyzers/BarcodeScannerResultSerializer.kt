@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.util.Pair
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
-import expo.modules.camera.utils.BarCodeScannerResult
+import expo.modules.interfaces.barcodescanner.BarCodeScannerResult
 
 object BarCodeScannerResultSerializer {
   fun toBundle(result: BarCodeScannerResult, density: Float) =

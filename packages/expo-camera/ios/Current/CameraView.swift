@@ -187,29 +187,17 @@ public class CameraView: ExpoView, EXAppLifecycleListener,
   }
 
   public func onAppForegrounded() {
-    sessionQueue.async { [weak self] in
-      guard let self else {
-        return
-      }
-      if !session.isRunning && isSessionPaused {
-        isSessionPaused = false
-        session.startRunning()
-        if torchEnabled {
-          enableTorch()
-        }
-      }
+    if !session.isRunning && isSessionPaused {
+      isSessionPaused = false
+      session.startRunning()
+      enableTorch()
     }
   }
 
   public func onAppBackgrounded() {
-    sessionQueue.async { [weak self] in
-      guard let self else {
-        return
-      }
-      if session.isRunning && !isSessionPaused {
-        isSessionPaused = true
-        session.stopRunning()
-      }
+    if session.isRunning && !isSessionPaused {
+      isSessionPaused = true
+      session.stopRunning()
     }
   }
 
@@ -806,7 +794,9 @@ public class CameraView: ExpoView, EXAppLifecycleListener,
   }
 
   @objc func orientationChanged() {
-    changePreviewOrientation()
+    Task {
+      await changePreviewOrientation()
+    }
   }
 
   func changePreviewOrientation() {

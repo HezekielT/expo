@@ -52,7 +52,6 @@ public final class ViewModuleWrapper: RCTViewManager, DynamicModuleWrapperProtoc
       return
     }
     self.moduleHolder = module.moduleHolder
-    self.viewDefinition = moduleHolder?.definition.views[DEFAULT_MODULE_VIEW]
   }
 
   /**

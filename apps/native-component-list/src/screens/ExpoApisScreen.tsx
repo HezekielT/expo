@@ -1,9 +1,7 @@
-import { memo } from 'react';
 import { Platform } from 'react-native';
 
 import ComponentListScreen from './ComponentListScreen';
 import ExpoAPIIcon from '../components/ExpoAPIIcon';
-import { type ScreenApiItem } from '../types/ScreenConfig';
 
 if (Platform.OS !== 'web') {
   // Optionally require expo-notifications as we cannot assume that the module is linked.
@@ -25,13 +23,83 @@ if (Platform.OS !== 'web') {
   });
 }
 
-export default memo(function ExpoApisScreen({ apis }: { apis: ScreenApiItem[] }) {
+const screens = [
+  'Accelerometer',
+  'ActionSheet',
+  'Alert',
+  'Appearance',
+  'AppleAuthentication',
+  'Audio',
+  'AsyncStorage',
+  'AuthSession',
+  'BackgroundFetch',
+  'BackgroundTask',
+  'BackgroundLocation',
+  'Battery',
+  'Brightness',
+  'Calendars',
+  'Cellular',
+  'Clipboard',
+  'Constants',
+  'Contacts',
+  'Crypto',
+  'Device',
+  'DocumentPicker',
+  'FileSystem',
+  'Font',
+  'Errors',
+  'Geocoding',
+  'Haptics',
+  'ImageManipulator',
+  'ImageManipulator (legacy)',
+  'ImagePicker',
+  'IntentLauncher',
+  'KeepAwake',
+  'Linking',
+  'LocalAuthentication',
+  'Localization',
+  'Location',
+  'MailComposer',
+  'MediaLibrary',
+  'ModulesCore',
+  'Network',
+  'NetInfo',
+  'Notification',
+  'Pedometer',
+  'Print',
+  'SMS',
+  'NavigationBar',
+  'SafeAreaContext',
+  'ScreenOrientation',
+  'SecureStore',
+  'ScreenCapture',
+  'Sensor',
+  'Sharing',
+  'StatusBar',
+  'StoreReview',
+  'SystemUI',
+  'TaskManager',
+  'TextToSpeech',
+  'TrackingTransparency',
+  'Video Thumbnails',
+  'ViewShot',
+  'WebBrowser',
+];
+
+export const ScreenItems = screens.map((name) => ({
+  name,
+  route: `/apis/${name.toLowerCase()}`,
+  // isAvailable: !!Screens[name],
+  isAvailable: true,
+}));
+
+export default function ExpoApisScreen() {
   return (
     <ComponentListScreen
       renderItemRight={({ name }: { name: string }) => (
         <ExpoAPIIcon name={name} style={{ marginRight: 10, marginLeft: 6 }} />
       )}
-      apis={apis}
+      apis={ScreenItems}
     />
   );
-});
+}

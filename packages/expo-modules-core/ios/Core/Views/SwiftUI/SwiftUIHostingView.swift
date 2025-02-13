@@ -5,14 +5,13 @@ import SwiftUI
 /**
  A type-erased protocol that hosting views must conform to.
  */
-public protocol AnyExpoSwiftUIHostingView {
+internal protocol AnyExpoSwiftUIHostingView {
   func updateProps(_ rawProps: [String: Any])
   func getContentView() -> any ExpoSwiftUI.View
-  func getProps() -> ExpoSwiftUI.ViewProps
 }
 
 extension ExpoSwiftUI {
-  public typealias AnyHostingView = AnyExpoSwiftUIHostingView
+  typealias AnyHostingView = AnyExpoSwiftUIHostingView
 
   /**
    A hosting view that renders a SwiftUI view inside the UIKit view hierarchy.
@@ -42,12 +41,7 @@ extension ExpoSwiftUI {
       self.contentView = ContentView()
       let rootView = AnyView(contentView.environmentObject(props).environmentObject(shadowNodeProxy))
       self.props = props
-      let controller = UIHostingController(rootView: rootView)
-
-      if #available(iOS 16.0, *) {
-        controller.sizingOptions = [.intrinsicContentSize]
-      }
-      self.hostingController = controller
+      self.hostingController = UIHostingController(rootView: rootView)
 
       super.init(appContext: appContext)
 
@@ -92,13 +86,6 @@ extension ExpoSwiftUI {
      */
     public func getContentView() -> any ExpoSwiftUI.View {
       return contentView
-    }
-
-    /**
-     Returns the view's props
-     */
-    public func getProps() -> ExpoSwiftUI.ViewProps {
-      return props
     }
 
     /**

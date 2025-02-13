@@ -3,23 +3,17 @@
 import CoreLocation
 import ExpoModulesCore
 
-internal class LocationsStreamer: BaseStreamer {
+internal class LocationsStreamer: BaseLocationProvider {
   typealias LocationsStream = AsyncThrowingStream<[CLLocation], Error>
 
   private var locationsStream: LocationsStream?
   private var continuation: LocationsStream.Continuation?
 
   deinit {
-    if continuation != nil {
-      stopStreaming()
-    }
+    stopStreaming()
   }
 
-  func streamLocations() throws -> LocationsStream {
-    if !CLLocationManager.locationServicesEnabled() {
-      throw Exceptions.LocationServicesDisabled()
-    }
-
+  func streamLocations() -> LocationsStream {
     if let stream = locationsStream {
       return stream
     }
@@ -31,7 +25,7 @@ internal class LocationsStreamer: BaseStreamer {
     return stream
   }
 
-  override func stopStreaming() {
+  func stopStreaming() {
     manager.stopUpdatingLocation()
     continuation?.finish()
 

@@ -84,7 +84,7 @@ public final class RemoteAppLoader: AppLoader {
     }
   }
 
-  override public func downloadAsset(_ asset: UpdateAsset, extraHeaders: [String: Any]) {
+  override public func downloadAsset(_ asset: UpdateAsset) {
     let urlOnDisk = self.directory.appendingPathComponent(asset.filename)
 
     FileDownloader.assetFilesQueue.async {
@@ -101,11 +101,12 @@ public final class RemoteAppLoader: AppLoader {
           )
           return
         }
+
         self.downloader.downloadAsset(
           fromURL: assetUrl,
           verifyingHash: asset.expectedHash,
           toPath: urlOnDisk.path,
-          extraHeaders: extraHeaders.merging(asset.extraRequestHeaders ?? [:]) { current, _ in current }
+          extraHeaders: asset.extraRequestHeaders ?? [:]
         ) { data, response, _ in
           DispatchQueue.global().async {
             self.handleAssetDownload(withData: data, response: response, asset: asset)

@@ -14,9 +14,11 @@ export type AppInfo = {
 };
 
 export type DevSettings = {
+  isDebuggingRemotely?: boolean;
   isElementInspectorShown?: boolean;
   isHotLoadingEnabled?: boolean;
   isPerfMonitorShown?: boolean;
+  isRemoteDebuggingAvailable?: boolean;
   isElementInspectorAvailable?: boolean;
   isHotLoadingAvailable?: boolean;
   isPerfMonitorAvailable?: boolean;
@@ -59,6 +61,10 @@ export async function toggleElementInspectorAsync() {
 
 export async function reloadAsync() {
   return await DevMenu.reload();
+}
+
+export async function toggleDebugRemoteJSAsync() {
+  return await DevMenu.toggleRemoteDebug();
 }
 
 export async function toggleFastRefreshAsync() {

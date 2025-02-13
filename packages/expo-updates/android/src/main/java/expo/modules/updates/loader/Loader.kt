@@ -86,8 +86,6 @@ abstract class Loader protected constructor(
     assetEntity: AssetEntity,
     updatesDirectory: File?,
     configuration: UpdatesConfiguration,
-    requestedUpdate: UpdateEntity?,
-    embeddedUpdate: UpdateEntity?,
     callback: AssetDownloadCallback
   )
 
@@ -206,7 +204,7 @@ abstract class Loader protected constructor(
         // however, it's not ready, so we should try to download all the assets again.
         updateEntity = existingUpdateEntity
       }
-      downloadAllAssets(update)
+      downloadAllAssets(update.assetEntityList)
     }
   }
 
@@ -216,11 +214,8 @@ abstract class Loader protected constructor(
     ERRORED
   }
 
-  private fun downloadAllAssets(update: Update) {
-    val assetList = update.assetEntityList
+  private fun downloadAllAssets(assetList: List<AssetEntity>) {
     assetTotal = assetList.size
-
-    val embeddedUpdate = loaderFiles.readEmbeddedUpdate(context, configuration)
     for (assetEntityCur in assetList) {
       var assetEntity = assetEntityCur
 
@@ -248,8 +243,6 @@ abstract class Loader protected constructor(
         assetEntity,
         updatesDirectory,
         configuration,
-        requestedUpdate = update.updateEntity,
-        embeddedUpdate = embeddedUpdate?.updateEntity,
         object : AssetDownloadCallback {
           override fun onFailure(e: Exception, assetEntity: AssetEntity) {
             val identifier = if (assetEntity.hash != null) {

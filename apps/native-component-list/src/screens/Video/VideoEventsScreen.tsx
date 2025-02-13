@@ -1,39 +1,38 @@
 import { useEvent } from 'expo';
-import { useVideoPlayer, VideoTrack, VideoView, SubtitleTrack } from 'expo-video';
+import { useVideoPlayer, VideoView } from 'expo-video';
 import React, { useCallback, useRef, useState } from 'react';
-import { ScrollView, View, Text, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, TextProps } from 'react-native';
 
-import { bigBuckBunnySource, hlsSource } from './videoSources';
+import { bigBuckBunnySource, elephantsDreamSource } from './videoSources';
 import { styles } from './videoStyles';
 import Button from '../../components/Button';
-import ConsoleBox from '../../components/ConsoleBox';
+
+const MediumText = (props: TextProps) => {
+  return <Text style={styles.mediumText} {...props} />;
+};
 
 export default function VideoEventsScreen() {
   const ref = useRef<VideoView>(null);
-  const [currentSource, setCurrentSource] = useState(hlsSource);
-  const player = useVideoPlayer(hlsSource, (player) => {
+  const [currentSource, setCurrentSource] = useState(bigBuckBunnySource);
+  const player = useVideoPlayer(bigBuckBunnySource, (player) => {
     player.loop = true;
     player.timeUpdateEventInterval = 0.25;
     player.showNowPlayingNotification = false;
-    player.muted = true;
     player.play();
   });
   const timeUpdate = useEvent(player, 'timeUpdate');
   const { status, error } = useEvent(player, 'statusChange', { status: player.status });
   const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: player.playing });
   const { playbackRate } = useEvent(player, 'playbackRateChange', { playbackRate: 1 });
-  const { source } = useEvent(player, 'sourceChange', { source: hlsSource });
+  const { source } = useEvent(player, 'sourceChange', { source: bigBuckBunnySource });
   const { volume } = useEvent(player, 'volumeChange', { volume: 1 });
   const { muted } = useEvent(player, 'mutedChange', { muted: false });
-  const loadedMetadata = useEvent(player, 'sourceLoad');
-  const { videoTrack } = useEvent(player, 'videoTrackChange', { videoTrack: null });
-
   const sourceObject = typeof source === 'object' ? source : null;
 
   const toggleSource = useCallback(() => {
     if (currentSource === bigBuckBunnySource) {
-      player.replace(hlsSource);
-      setCurrentSource(hlsSource);
+      player.replace(elephantsDreamSource);
+      setCurrentSource(elephantsDreamSource);
     } else {
       player.replace(bigBuckBunnySource);
       setCurrentSource(bigBuckBunnySource);
@@ -64,60 +63,20 @@ export default function VideoEventsScreen() {
           <Button style={styles.button} title="Toggle mute" onPress={toggleMute} />
           <Button style={styles.button} title="Change Volume" onPress={toggleVolume} />
         </View>
-
-        <Text style={styles.switchTitle}>Playback:</Text>
-        <ConsoleBox style={myStyles.metadataContainer}>
-          Source: {sourceObject?.metadata?.title ?? 'No title'} {'\n'}
-          Duration: {loadedMetadata?.duration ?? 'Unknown'} {'\n'}
-          Is playing: {isPlaying ? 'true' : 'false'} {'\n'}
-          Current time: {Math.round((timeUpdate?.currentTime ?? 0) * 100) / 100} {'\n'}
-          Buffered to: {Math.round((timeUpdate?.bufferedPosition ?? 0) * 100) / 100} {'\n'}
-          Volume: {volume} {'\n'}
-          Is Muted: {muted ? 'true' : 'false'} {'\n'}
-          Status: {JSON.stringify(status)} {'\n'}
-          Playback rate: {playbackRate} {'\n'}
-          {error && 'Error: ' + error.message} {'\n'}
-          Current Video track: {'{\n'}
-          {`\tid: "${videoTrack?.id}",\n`}
-          {`\tmimeType: "${videoTrack?.mimeType}",\n`}
-          {`\tisSupported: ${videoTrack?.isSupported},\n`}
-          {`\tsize: "${videoTrack?.size.width}x${videoTrack?.size.height}",\n`}
-          {`\tbitrate: ${videoTrack?.bitrate}\n`}
-          {`\tframe rate: ${videoTrack?.frameRate}\n`}
-          {`}`}
-        </ConsoleBox>
-
-        <Text style={styles.switchTitle}>Tracks:</Text>
-        <ConsoleBox style={myStyles.metadataContainer}>
-          Available Video Tracks: {videoTracksToString(loadedMetadata?.availableVideoTracks)}
-          {'\n\n'}
-          Available Subtitle Tracks:
-          {subtitleTracksToString(loadedMetadata?.availableSubtitleTracks)}
-        </ConsoleBox>
+        <MediumText>Is playing: {isPlaying ? 'true' : 'false'}</MediumText>
+        <MediumText>
+          Current time: {Math.round((timeUpdate?.currentTime ?? 0) * 100) / 100}
+        </MediumText>
+        <MediumText>
+          Buffered to: {Math.round((timeUpdate?.bufferedPosition ?? 0) * 100) / 100}
+        </MediumText>
+        <MediumText>Volume: {volume}</MediumText>
+        <MediumText>Is Muted: {muted ? 'true' : 'false'}</MediumText>
+        <MediumText>Status: {JSON.stringify(status)}</MediumText>
+        {error && <MediumText>Error: {error.message}</MediumText>}
+        <MediumText style={styles.mediumText}>Playback rate: {playbackRate}</MediumText>
+        <MediumText>Source: {sourceObject?.metadata?.title ?? 'No metadata'}</MediumText>
       </ScrollView>
     </View>
   );
 }
-
-function videoTracksToString(tracks?: VideoTrack[]) {
-  let result = '[';
-  for (const track of tracks ?? []) {
-    result += ` \n\t{size: "${track.size.width}x${track.size.height}", bitrate: ${track.bitrate}}, mimeType: "${track.mimeType}", isSupported: ${track.isSupported}, id: "${track?.id}"`;
-  }
-  return result + ' \n]';
-}
-
-function subtitleTracksToString(tracks?: SubtitleTrack[]) {
-  let result = '[';
-  for (const track of tracks ?? []) {
-    result += ` \n\t{id: "${track.id}", language: "${track.language}", label: "${track.label}"}`;
-  }
-  return result + '\n]';
-}
-
-const myStyles = StyleSheet.create({
-  metadataContainer: {
-    alignSelf: 'stretch',
-    padding: 10,
-  },
-});

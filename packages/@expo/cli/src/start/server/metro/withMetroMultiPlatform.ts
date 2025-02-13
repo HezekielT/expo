@@ -650,7 +650,7 @@ export function withExtendedResolver(
         // Shim out React Native native runtime globals in server mode for native.
         if (isServer) {
           if (normal.endsWith('react-native/Libraries/Core/InitializeCore.js')) {
-            debug('Shimming out InitializeCore for React Native in native SSR bundle');
+            console.log('Shimming out InitializeCore for React Native in native SSR bundle');
             return {
               type: 'empty',
             };

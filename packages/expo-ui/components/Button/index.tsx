@@ -1,5 +1,5 @@
 import { requireNativeView } from 'expo';
-import { Platform, StyleProp, StyleSheet, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
 import { ViewEvent } from '../../src';
 
@@ -126,10 +126,7 @@ export function Button(props: ButtonProps) {
   return (
     <ButtonNativeView
       {...transformButtonProps(props)}
-      style={StyleSheet.compose(
-        Platform.OS === 'android' ? { minWidth: 80, minHeight: 40 } : {},
-        props.style
-      )}
+      style={StyleSheet.compose({ minWidth: 80, minHeight: 40 }, props.style)}
     />
   );
 }

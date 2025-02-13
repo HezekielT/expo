@@ -1,4 +1,4 @@
-import { PlayerError, SubtitleTrack, VideoPlayerStatus, VideoSource, VideoTrack } from './VideoPlayer.types';
+import { PlayerError, SubtitleTrack, VideoPlayerStatus, VideoSource } from './VideoPlayer.types';
 /**
  * Handlers for events which can be emitted by the player.
  */
@@ -43,15 +43,6 @@ export type VideoPlayerEvents = {
      * Handler for an event emitted when the current subtitle track changes.
      */
     subtitleTrackChange(payload: SubtitleTrackChangeEventPayload): void;
-    /**
-     * Handler for an event emitted when the current video track changes.
-     */
-    videoTrackChange(payload: VideoTrackChangeEventPayload): void;
-    /**
-     * Handler for an event emitted when the player has finished loading metadata for the current video source.
-     * This event is emitted when the player has finished metadata for a [`VideoSource`](#videosource), but it doesn't mean that there is enough data buffered to start the playback.
-     */
-    sourceLoad(payload: SourceLoadEventPayload): void;
 };
 /**
  * Data delivered with the [`statusChange`](#videoplayerevents) event.
@@ -166,7 +157,7 @@ export type TimeUpdateEventPayload = {
      */
     bufferedPosition: number;
 };
-export type SubtitleTrackChangeEventPayload = {
+type SubtitleTrackChangeEventPayload = {
     /**
      * New subtitle track of the player.
      */
@@ -176,24 +167,7 @@ export type SubtitleTrackChangeEventPayload = {
      */
     oldSubtitleTrack?: SubtitleTrack | null;
 };
-/**
- * Data delivered with the [`videoTrackChange`](#videoplayerevents) event, contains information about the video track which is currently being played.
- */
-export type VideoTrackChangeEventPayload = {
-    /**
-     * New video track of the player.
-     */
-    videoTrack: VideoTrack | null;
-    /**
-     * Previous video track of the player.
-     */
-    oldVideoTrack?: VideoTrack | null;
-};
-/**
- * TODO @behenate: For SDK53 mark as deprecated in favor of SourceLoadEventPayload
- * @hidden
- */
-export type AvailableSubtitleTracksChangeEventPayload = {
+type AvailableSubtitleTracksChangeEventPayload = {
     /**
      * Array of available subtitle tracks.
      */
@@ -202,27 +176,6 @@ export type AvailableSubtitleTracksChangeEventPayload = {
      * Previous array of available subtitle tracks.
      */
     oldAvailableSubtitleTracks?: SubtitleTrack[];
-};
-/**
- * Data delivered with the [`sourceLoad`](#videoplayerevents) event, contains information about the video source that has finished loading.
- */
-type SourceLoadEventPayload = {
-    /**
-     * The video source that has been loaded.
-     */
-    videoSource: VideoSource | null;
-    /**
-     * Duration of the video source in seconds.
-     */
-    duration: number;
-    /**
-     * Video tracks available for the loaded video source.
-     */
-    availableVideoTracks: VideoTrack[];
-    /**
-     * Subtitle tracks available for the loaded video source.
-     */
-    availableSubtitleTracks: SubtitleTrack[];
 };
 export {};
 //# sourceMappingURL=VideoPlayerEvents.types.d.ts.map

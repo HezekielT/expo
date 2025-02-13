@@ -68,8 +68,8 @@ import expo.modules.camera.utils.FileSystemUtils
 import expo.modules.camera.utils.mapX
 import expo.modules.camera.utils.mapY
 import expo.modules.core.errors.ModuleDestroyedException
-import expo.modules.camera.utils.BarCodeScannerResult
-import expo.modules.camera.utils.BarCodeScannerResult.BoundingBox
+import expo.modules.interfaces.barcodescanner.BarCodeScannerResult
+import expo.modules.interfaces.barcodescanner.BarCodeScannerResult.BoundingBox
 import expo.modules.interfaces.camera.CameraViewInterface
 import expo.modules.kotlin.AppContext
 import expo.modules.kotlin.Promise
@@ -652,24 +652,24 @@ class ExpoCameraView(
     val landscape = getDeviceOrientation() % 2 != 0
 
     if (facingFront && portrait) {
-      cornerPoints.mapY { barcode.height - cornerPoints[it] }
+      cornerPoints.mapY { barcode.referenceImageHeight - cornerPoints[it] }
     }
     if (facingFront && landscape) {
-      cornerPoints.mapX { barcode.width - cornerPoints[it] }
+      cornerPoints.mapX { barcode.referenceImageWidth - cornerPoints[it] }
     }
 
     cornerPoints.mapX {
-      (cornerPoints[it] * previewWidth / barcode.width.toFloat())
+      (cornerPoints[it] * previewWidth / barcode.referenceImageWidth.toFloat())
         .roundToInt()
     }
     cornerPoints.mapY {
-      (cornerPoints[it] * previewHeight / barcode.height.toFloat())
+      (cornerPoints[it] * previewHeight / barcode.referenceImageHeight.toFloat())
         .roundToInt()
     }
 
     barcode.cornerPoints = cornerPoints
-    barcode.height = height
-    barcode.width = width
+    barcode.referenceImageHeight = height
+    barcode.referenceImageWidth = width
   }
 
   private fun getCornerPointsAndBoundingBox(
@@ -717,8 +717,8 @@ class ExpoCameraView(
       onBarcodeScanned(
         BarcodeScannedEvent(
           target = id,
-          data = barcode.value.toString(),
-          raw = barcode.raw.toString(),
+          data = barcode.value,
+          raw = barcode.raw,
           type = BarcodeType.mapFormatToString(barcode.type),
           cornerPoints = cornerPoints,
           bounds = boundingBox,

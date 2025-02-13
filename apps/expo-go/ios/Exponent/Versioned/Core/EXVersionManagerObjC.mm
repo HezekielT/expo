@@ -237,6 +237,18 @@ RCT_EXTERN void EXRegisterScopedModule(Class, ...);
   }
 }
 
+- (void)disableRemoteDebuggingForHost:(id)host
+{
+  RCTDevSettings *devSettings = [self devSettings:host];
+  devSettings.isDebuggingRemotely = NO;
+}
+
+- (void)toggleRemoteDebuggingForHost:(id)host
+{
+  RCTDevSettings *devSettings = [self devSettings:host];
+  devSettings.isDebuggingRemotely = !devSettings.isDebuggingRemotely;
+}
+
 - (void)togglePerformanceMonitorForHost:(id)host
 {
   RCTDevSettings *devSettings = [self devSettings:host];

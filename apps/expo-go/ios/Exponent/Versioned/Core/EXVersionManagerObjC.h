@@ -20,6 +20,8 @@
 - (void)invalidate;
 
 - (void)showDevMenuForHost:(id)host;
+- (void)disableRemoteDebuggingForHost:(id)host;
+- (void)toggleRemoteDebuggingForHost:(id)host;
 - (void)togglePerformanceMonitorForHost:(id)host;
 - (void)toggleElementInspectorForHost:(id)host;
 - (uint32_t)addWebSocketNotificationHandler:(void (^)(NSDictionary<NSString *, id> *))handler

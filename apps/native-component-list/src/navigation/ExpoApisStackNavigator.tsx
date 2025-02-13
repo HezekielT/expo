@@ -10,7 +10,7 @@ import getStackNavWithConfig from '../navigation/StackConfig';
 import { AudioScreens } from '../screens/Audio/AudioScreen';
 import ExpoApis from '../screens/ExpoApisScreen';
 import { ModulesCoreScreens } from '../screens/ModulesCore/ModulesCoreScreen';
-import { type ScreenApiItem, type ScreenConfig } from '../types/ScreenConfig';
+import { ScreenConfig } from '../types/ScreenConfig';
 
 const Stack = createStackNavigator();
 
@@ -207,7 +207,6 @@ export const Screens: ScreenConfig[] = [
       return optionalRequire(() => require('../screens/ImageManipulatorScreenLegacy'));
     },
     name: 'ImageManipulator (legacy)',
-    route: 'image-manipulator-legacy',
   },
   {
     getComponent() {
@@ -429,20 +428,12 @@ export const Screens: ScreenConfig[] = [
   ...AudioScreens,
 ];
 
-export const screenApiItems: ScreenApiItem[] = Screens.map(({ name, route }) => ({
-  name,
-  route: '/apis/' + (route ?? name.toLowerCase()),
-  isAvailable: true,
-}));
-
 function ExpoApisStackNavigator(props: { navigation: BottomTabNavigationProp<any> }) {
   const { theme } = useTheme();
 
   return (
     <Stack.Navigator {...props} {...getStackNavWithConfig(props.navigation, theme)}>
-      <Stack.Screen name="ExpoApis" options={{ title: 'APIs in Expo SDK' }}>
-        {() => <ExpoApis apis={screenApiItems} />}
-      </Stack.Screen>
+      <Stack.Screen name="ExpoApis" options={{ title: 'APIs in Expo SDK' }} component={ExpoApis} />
       {Screens.map(({ name, options, getComponent }) => (
         <Stack.Screen name={name} key={name} getComponent={getComponent} options={options ?? {}} />
       ))}

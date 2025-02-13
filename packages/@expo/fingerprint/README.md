@@ -1,4 +1,4 @@
-# @expo/fingerprint
+# expo-asset
 
 A library to generate a fingerprint from a React Native project
 
